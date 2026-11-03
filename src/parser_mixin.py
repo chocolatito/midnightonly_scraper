@@ -3,7 +3,7 @@ import re
 import time
 from curl_cffi import requests
 from curl_cffi.requests.impersonate import REAL_TARGET_MAP
-from lxml import etree
+from lxml import etree, html
 
 
 class ParserMixin:
@@ -60,3 +60,13 @@ class ParserMixin:
         if not re.search(self.NS_REGEX, xml_code):
             raise Exception('NAME_SPACE_NOT_FOUND')
         return re.search(self.NS_REGEX, xml_code)[1]
+
+    def to_string(self, el):
+        return html.tostring(el, encoding="utf-8").decode("utf-8").strip()
+
+    def html_parser(self, html_code: str):
+        return html.fromstring(html_code)
+
+    def get_tree(self, url, impersonate: str = None, kwargs: str = {}):
+        response = self.http_client(url, impersonate=impersonate, kwargs=kwargs)
+        return self.html_parser(response.text)

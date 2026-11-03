@@ -4,8 +4,7 @@ import os
 import json
 import urllib.parse
 
-# from src import constants
-import constants
+from src import constants
 
 
 def init__logger(file_name: str,

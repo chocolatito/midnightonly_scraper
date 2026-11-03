@@ -1,7 +1,8 @@
 import re
-import constants
-from parser_mixin import ParserMixin
-import utils
+from src import constants
+from src.parser_mixin import ParserMixin
+from src.scraper import Scraper
+from src import utils
 
 
 class Crawler(ParserMixin):
@@ -36,4 +37,8 @@ class Crawler(ParserMixin):
             self.logger.info(f"Proccessing {url}")
             root = self.get_root(url)
             self.all_urls += list(map(m_item, root.findall('sm:url', self.ns)))
-        utils.save_json(file_path="results.json", data=self.all_urls)
+        try:
+            Scraper('[1-1]', self.logger).scrape(self.all_urls[0]["url"])
+        except Exception as e:
+            self.logger.warning(f"ERROR: {e}")
+            pass
